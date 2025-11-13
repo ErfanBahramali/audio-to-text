@@ -1,6 +1,6 @@
 {
   "name": "audio-to-text-node",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Backend audio file to text transcription using Web Speech API with Puppeteer",
   "keywords": [
     "node",
@@ -11,10 +11,15 @@
     "transcription",
     "web-speech-api",
     "puppeteer",
+    "puppeteer-core",
+    "microsoft-edge",
+    "chrome",
+    "chromium",
     "ffmpeg",
     "voice",
     "text",
     "linux",
+    "pipewire",
     "pulseaudio",
     "backend",
     "typescript"
@@ -50,10 +55,10 @@
     "LICENSE"
   ],
   "dependencies": {
-    "chalk": "^5.5.0",
-    "puppeteer": "^24.15.0"
+    "chalk": "^5.6.2",
+    "puppeteer-core": "^24.29.1"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   }
 }

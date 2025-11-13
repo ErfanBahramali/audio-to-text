@@ -1,6 +1,7 @@
 import chalk from "chalk";
-import puppeteer, { Browser } from "puppeteer";
+import puppeteer, { Browser } from "puppeteer-core";
 import { playAudio } from "./routing";
+import * as fs from 'fs';
 
 let browserInstance: Browser | null = null;
 
@@ -8,14 +9,43 @@ let browserInstance: Browser | null = null;
  * Gets or creates a Puppeteer browser instance.
  * If a browser instance already exists, it returns that instance.
  * If not, it launches a new browser instance with specific arguments.
+ * @param executablePath Optional path to the browser executable. If not provided, will try common paths.
  * @returns A Promise that resolves to the Puppeteer browser instance.
  */
-async function getOrCreateBrowser(): Promise<Browser> {
+async function getOrCreateBrowser(executablePath?: string): Promise<Browser> {
 
     if (!browserInstance) {
+        const defaultPaths = [
+            // Microsoft Edge
+            '/usr/bin/microsoft-edge',
+            '/usr/bin/microsoft-edge-stable',
+            // Google Chrome
+            '/usr/bin/google-chrome',
+            '/usr/bin/google-chrome-stable',
+            // Chromium
+            '/usr/bin/chromium-browser',
+            '/usr/bin/chromium',
+        ];
+
+        let browserPath = executablePath;
+
+        // If no path provided, try to find a browser automatically
+        if (!browserPath) {
+            for (const path of defaultPaths) {
+                if (fs.existsSync(path)) {
+                    browserPath = path;
+                    break;
+                }
+            }
+        }
+
+        if (!browserPath) {
+            throw new Error('No browser executable found. Please provide executablePath parameter or install Microsoft Edge, Chrome, or Chromium.');
+        }
 
         browserInstance = await puppeteer.launch({
             headless: true,
+            executablePath: browserPath,
             args: [
                 '--use-fake-ui-for-media-stream',
                 '--no-sandbox',
@@ -31,14 +61,14 @@ async function getOrCreateBrowser(): Promise<Browser> {
  * Launches the speech recognition process in the browser.
  * @param files Array of audio file chunks with their paths and start times
  * @param language Language code for the speech recognition
- * @param chunkLength Length of each audio chunk in seconds
+ * @param executablePath Optional path to the browser executable
  * @returns A Promise that resolves to the final transcript text
  */
-export async function launchRecognizer(files: Array<{ path: string, start: number }>, language: string): Promise<string> {
+export async function launchRecognizer(files: Array<{ path: string, start: number }>, language: string, executablePath?: string): Promise<string> {
 
     console.log(chalk.blue("- Launching browser and setting up recognizer..."));
 
-    const browser = await getOrCreateBrowser();
+    const browser = await getOrCreateBrowser(executablePath);
 
     let transcriptText = "";
 

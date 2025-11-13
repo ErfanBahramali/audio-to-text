@@ -21,11 +21,16 @@ export async function transcribeFromFile(
          */
         language?: string;
         /**
-         * PulseAudio speaker device name (default: 'virtual_speaker').
+         * Path to the browser executable (Edge/Chrome/Chromium).
+         * If not provided, will try to find it automatically.
+         */
+        executablePath?: string;
+        /**
+         * Virtual speaker device name for PipeWire/PulseAudio (default: 'virtual_speaker').
          */
         speakerDevice?: string;
         /**
-         * PulseAudio microphone device name (default: 'virtual_microphone').
+         * Virtual microphone device name for PipeWire/PulseAudio (default: 'virtual_microphone').
          */
         microphoneDevice?: string;
     }
@@ -48,7 +53,7 @@ export async function transcribeFromFile(
         restoreAudioRouting();
     });
 
-    const text = await launchRecognizer(files, language);
+    const text = await launchRecognizer(files, language, options?.executablePath);
 
     return text;
 }

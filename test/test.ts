@@ -5,6 +5,7 @@ import chalk from 'chalk';
 async function runTest() {
 
     const filePath = path.resolve('./example.ogg');
+    const executablePath = '/usr/bin/google-chrome';
     const speakerDevice = 'virtual_speaker';
     const microphoneDevice = 'virtual_microphone';
 
@@ -13,6 +14,7 @@ async function runTest() {
 
         const result = await transcribeFromFile(filePath, {
             language: 'fa-IR', // or 'en-US', for example
+            executablePath,
             speakerDevice,
             microphoneDevice
         });
